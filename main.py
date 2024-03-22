@@ -1,23 +1,17 @@
-"""This is the main module to run the app"""
-
 # Importing the necessary Python modules.
 import streamlit as st
 
 # Import necessary functions from web_functions
-from web_functions import load_data
+from web_functions import load_data, train_model
+from Tabs import home, data, predict, visualise
 
 # Configure the app
 st.set_page_config(
-    page_title = 'Diabetes Prediction',
-    page_icon ='🥯',
-    layout = 'wide',
-    initial_sidebar_state = 'auto'
+    page_title='Diabetes Prediction',
+    page_icon='🥯',
+    layout='wide',
+    initial_sidebar_state='auto'
 )
-
-# Import pages
-from Tabs import home, data, predict, visualise
-
-
 
 # Dictionary for pages
 Tabs = {
@@ -25,11 +19,10 @@ Tabs = {
     "Data Info": data,
     "Prediction": predict,
     "Visualisation": visualise
-    #"About me": about
 }
 
 # Create a sidebar
-# Add title to sidear
+# Add title to sidebar
 st.sidebar.title("Navigation")
 
 # Create radio option to select the page
@@ -38,10 +31,13 @@ page = st.sidebar.radio("Pages", list(Tabs.keys()))
 # Loading the dataset.
 df, X, y = load_data()
 
-# Call the app funciton of selected page to run
+# Train model
+model, score = train_model(X, y)
+
+# Call the app function of selected page to run
 if page in ["Prediction", "Visualisation"]:
-    Tabs[page].app(df, X, y)
-elif (page == "Data Info"):
+    Tabs[page].app(df, X, y, model)  # Pass the trained model to the prediction or visualization page
+elif page == "Data Info":
     Tabs[page].app(df)
 else:
     Tabs[page].app()
